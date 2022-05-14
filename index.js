@@ -2,8 +2,8 @@ require('dotenv').config();
 
 const Telebot = require('telebot');
 const bot = new Telebot({
-	token: process.env.bot_token,
-	limit: 1000
+    token: process.env.bot_token,
+    limit: 1000
 });
 
 const express = require('express');
@@ -20,22 +20,24 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(expressCspHeader({
     directives: {
-      'default-src': [SELF],
-      'script-src': [SELF, INLINE],
-      'style-src': [SELF, INLINE],
-      'img-src': [SELF, INLINE],
-      'worker-src': [NONE],
-      'block-all-mixed-content': true
+        'default-src': [SELF],
+        'script-src': [SELF, INLINE],
+        'style-src': [SELF, INLINE],
+        'img-src': [SELF, INLINE],
+        'worker-src': [NONE],
+        'block-all-mixed-content': true
     }
-  }));
+}));
 
 app.post('/baseutils/:ChatID', (req, res, next) => {
     try {
 
-        bot.sendMessage(req.params.ChatID, req.body.msg, {parseMode: req.body.format, webPreview: !req.body.disablePreview});
-
-        res.status(200);
-        res.json({ ok: true });
+        bot.sendMessage(req.params.ChatID, req.body.msg, { parseMode: req.body.format, webPreview: !req.body.disablePreview }).then((MessageResponse) => {
+            res.status(200);
+            res.json({ ok: true, chat: MessageResponse.chat });
+        }).catch((err) => {
+            console.log(err);
+        });
     } catch (err) {
         next(err);
     }
@@ -52,3 +54,4 @@ app.listen(process.env.port, () => {
 });
 
   //https://operation.ebg.pw/baseutils/-1001428173160
+  //http://localhost/baseutils/-1001428173160
