@@ -8,16 +8,27 @@ const bot = new Telebot({
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
 
 const middlewares = require('./middlewares');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(expressCspHeader({
+    directives: {
+      'default-src': [SELF],
+      'script-src': [SELF, INLINE],
+      'style-src': [SELF, INLINE],
+      'img-src': [SELF, INLINE],
+      'worker-src': [NONE],
+      'block-all-mixed-content': true
+    }
+  }));
 
 app.post('/baseutils/:ChatID', (req, res, next) => {
     try {
-        
+
         bot.sendMessage(req.params.ChatID, req.body.msg, {parseMode: req.body.format, webPreview: !req.body.disablePreview});
 
         res.status(200);
@@ -37,4 +48,4 @@ app.listen(process.env.port, () => {
     /* eslint-enable no-console */
 });
 
-  //http://localhost/baseutils/-1001428173160
+  //https://operation.ebg.pw/baseutils/-1001428173160
