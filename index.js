@@ -9,10 +9,13 @@ const bot = new Telebot({
 const express = require('express');
 const bodyParser = require('body-parser');
 const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
+const cors = require('cors');
 
 const middlewares = require('./middlewares');
 
 const app = express();
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(expressCspHeader({
